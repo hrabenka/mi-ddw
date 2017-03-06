@@ -5,3 +5,6 @@ data.json
 data-*.json
 
 __pycache__
+
+lecture-02-text-processing/book.txt
+lecture-02-text-processing/book-shortened.txt

@@ -1,10 +1,10 @@
 import scrapy
 
 
-class BlogSpider(scrapy.Spider):
+class MyWebSpider(scrapy.Spider):
     name = 'bagr'
     allowed_domains = 'petrhejna.org'
-    start_urls = ['http://petrhejna.org']
+    start_urls = ['http://petrhejna.org/']
 
     def parse(self, response):
         for link in response.css('a'):
