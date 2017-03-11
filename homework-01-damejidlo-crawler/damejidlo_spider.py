@@ -3,7 +3,9 @@ import scrapy
 
 class DamejidloSpider(scrapy.Spider):
     name = 'Damejidlo'
+    sitemap_urls = ['https://www.damejidlo.cz/sitemap.xml']
     allowed_domains = ['damejidlo.cz', 'www.damejidlo.cz']
+
     start_urls = ['http://damejidlo.cz']
 
     def parse(self, response):
@@ -29,4 +31,5 @@ class DamejidloSpider(scrapy.Spider):
             }
 
         for next_page in response.css('a ::attr(href)').extract():
-            yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
+            if not next_page.startswith('/rozvoz/') and not next_page.startswith('/en/'):
+                yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
