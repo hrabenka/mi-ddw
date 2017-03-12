@@ -10,6 +10,7 @@ class DamejidloSpider(scrapy.Spider):
 
     def parse(self, response):
         food_selector = './/li[@class="menu__list-item" or @class="menu__list-item menu__list-item--without-image"]'
+        urls = []
         for food in response.xpath(food_selector):
             food_text = food.css('div.food-text')
 
@@ -23,13 +24,33 @@ class DamejidloSpider(scrapy.Spider):
 
             food_price = food_values.css('span.food-values__price ::text').extract_first()
 
+            food_title.css('a ::attr(href)').extract_first().strip()
+            url = food_title.css('a ::attr(href)').extract_first().strip()
+
+            question_mark_position = url.find('?')
+            url = url if question_mark_position == -1 else url[:question_mark_position]
+
+            if url in urls:
+                print("[IGNORED FOOD] " + url)
+                continue
+
+            urls.append(url)
+
             yield {
                 'name': name.strip() if name is not None else None,
                 'description': description.strip() if description is not None else None,
-                'url': food_title.css('a ::attr(href)').extract_first().strip(),
+                'url': url,
                 'price': food_price.strip() if food_price is not None else None,
             }
 
         for next_page in response.css('a ::attr(href)').extract():
-            if not next_page.startswith('/rozvoz/') and not next_page.startswith('/en/'):
-                yield scrapy.Request(response.urljoin(next_page), callback=self.parse)
+            if not next_page.startswith('/rozvoz/') \
+                    and not next_page.startswith('/en/') \
+                    and next_page != '/top' \
+                    and '/do-kosiku/' not in next_page:
+                question_mark_position = next_page.find('?')
+                url = next_page if question_mark_position == -1 else next_page[:question_mark_position]
+                yield scrapy.Request(response.urljoin(url), callback=self.parse)
+
+            else:
+                print("[IGNORED PAGE] " + next_page)
