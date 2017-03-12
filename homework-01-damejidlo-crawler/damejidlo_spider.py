@@ -46,6 +46,7 @@ class DamejidloSpider(scrapy.Spider):
         for next_page in response.css('a ::attr(href)').extract():
             if not next_page.startswith('/rozvoz/') \
                     and not next_page.startswith('/en/') \
+                    and not next_page.startswith('/sk/') \
                     and next_page != '/top' \
                     and '/do-kosiku/' not in next_page:
                 question_mark_position = next_page.find('?')
