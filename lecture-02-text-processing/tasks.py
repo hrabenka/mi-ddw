@@ -56,9 +56,9 @@ print(sorted(count, key=lambda x: x[1])[-20:-1])
 # print("Lemmas:")
 # print(lemmas)
 # 
-# tagged = nltk.pos_tag(tokens)
-# print("Tagged:")
-# print(tagged)
+tagged = nltk.pos_tag(tokens)
+print("Tagged:")
+print(tagged)
 # 
 # ne_chunked = nltk.ne_chunk(tagged, binary=True)
 # print("Entities:")
